@@ -1,16 +1,44 @@
-## Hi there 👋
+import os
+import time
+from colorama import Fore, Style, init
 
-<!--
-**pinphongV2/PINPHONGV2** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+init(autoreset=True)
 
-Here are some ideas to get you started:
+def display_maze(maze, player_pos, explored):
+    os.system('cls' if os.name == 'nt' else 'clear')
+    for i, row in enumerate(maze):
+        for j, col in enumerate(row):
+            if (i, j) == player_pos:
+                print(Fore.YELLOW + "🐢", end=" ")
+            elif (i, j) in explored:
+                if explored[(i, j)]:
+                    print(Fore.GREEN + "🟢", end=" ")  # ทางที่ไปได้
+                else:
+                    print(Fore.RED + "🔴", end=" ")  # ทางตัน
+            else:
+                print(col, end=" ")
+        print("")
+    print("")
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+def explore_path(maze, start, end):
+    stack = [start]
+    visited = set()
+    explored = {}
+
+    while stack:
+        current = stack.pop()
+        if current == end:
+            display_maze(maze, current, explored)
+            return True
+        
+        if current in visited:
+            continue
+        visited.add(current)
+        x, y = current
+
+        paths = []
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            next_pos = (x + dx, y + dy)
+            if 0 <= next_pos[0] < len(maze) and 0 <= next_pos[1] < len(maze[0]) and maze[next_pos[0]][next_pos[1]] in (" ", "E"):
+                paths.append(next_pos)
+        
